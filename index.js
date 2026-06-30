@@ -1,18 +1,21 @@
 require("dotenv").config();
 
 const express = require("express");
-const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
 const helmet = require("helmet");
+const connectDB = require("./src/config/database");
 
 const app = express();
 
-app.use(helmet());
-
-console.log("Hello World");
-
 const PORT = process.env.PORT || 5100;
 
+// Conectar a MongoDB
+connectDB();
+
+// Middlewares
+app.use(helmet());
+app.use(express.json());
+
 app.listen(PORT, () => {
+    console.log("Hello World");
     console.log(`Servidor ejecutándose en el puerto ${PORT}`);
 });
