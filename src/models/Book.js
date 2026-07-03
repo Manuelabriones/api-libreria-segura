@@ -84,7 +84,6 @@ const bookSchema = new mongoose.Schema(
     coverImage: {
       type: String,
       trim: true,
-      // Solo se almacena la ruta relativa o un ID de almacenamiento, nunca una URL externa sin validar
     },
     isActive: {
       type: Boolean,
@@ -115,10 +114,8 @@ const bookSchema = new mongoose.Schema(
   }
 );
 
-// Índices para búsquedas frecuentes en catálogo
+// Índices para búsquedas frecuentes
 bookSchema.index({ title: 'text', authors: 'text' });
 bookSchema.index({ genre: 1, isActive: 1 });
-bookSchema.index({ isbn: 1 });
-bookSchema.index({ isPremiumOnly: 1, isActive: 1 });
 
 module.exports = mongoose.model('Book', bookSchema);

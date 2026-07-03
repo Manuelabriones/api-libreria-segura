@@ -27,17 +27,16 @@ const cartSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: [true, 'El usuario es obligatorio'],
-      unique: true, // Un carrito por usuario
+      unique: true,
     },
     items: {
       type: [cartItemSchema],
       default: [],
     },
-    // TTL de seguridad: el carrito expira si no hay actividad en 30 días
     expiresAt: {
       type: Date,
       default: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      index: { expires: 0 }, // MongoDB TTL index
+      index: { expires: 0 },
     },
   },
   {
@@ -51,12 +50,9 @@ const cartSchema = new mongoose.Schema(
   }
 );
 
-cartSchema.index({ user: 1 });
-
 // Actualizar expiración al modificar el carrito
-cartSchema.pre('save', function (next) {
+cartSchema.pre('save', function () {
   this.expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-  next();
 });
 
 module.exports = mongoose.model('Cart', cartSchema);

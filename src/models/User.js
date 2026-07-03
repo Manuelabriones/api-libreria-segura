@@ -64,16 +64,18 @@ const userSchema = new mongoose.Schema(
 );
 
 // Índice para búsquedas frecuentes
-userSchema.index({ email: 1 });
 userSchema.index({ role: 1, isActive: 1 });
 
 // Hash de contraseña antes de guardar
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+userSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
+
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
-  if (!this.isNew) this.passwordChangedAt = Date.now() - 1000;
-  next();
+
+  if (!this.isNew) {
+    this.passwordChangedAt = Date.now() - 1000;
+  }
 });
 
 // Método para comparar contraseñas
