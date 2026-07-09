@@ -23,7 +23,12 @@ app.use("/api/users", userRoutes);
 app.use("/api/carts", cartRoutes);
 app.use("/api/orders", orderRoutes);
 
-app.listen(PORT, () => {
-    console.log("Hello World");
-    console.log(`Servidor ejecutándose en el puerto ${PORT}`);
-});
+// Solo iniciar el servidor cuando se ejecuta localmente
+if (process.env.NODE_ENV !== "production") {
+    app.listen(PORT, () => {
+        console.log("Hello World");
+        console.log(`Servidor ejecutándose en el puerto ${PORT}`);
+    });
+}
+
+module.exports = app;
