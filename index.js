@@ -15,20 +15,24 @@ const PORT = process.env.PORT || 5100;
 // Conectar a MongoDB
 connectDB();
 
+// Middleware
 app.use(express.json());
 
-// Rutas
+// Ruta principal
+app.get("/", (req, res) => {
+    res.status(200).json({
+        message: "API Librería Segura funcionando correctamente"
+    });
+});
+
+// Rutas de la API
 app.use("/api/books", bookRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/carts", cartRoutes);
 app.use("/api/orders", orderRoutes);
 
-// Solo iniciar el servidor cuando se ejecuta localmente
-if (process.env.NODE_ENV !== "production") {
-    app.listen(PORT, () => {
-        console.log("Hello World");
-        console.log(`Servidor ejecutándose en el puerto ${PORT}`);
-    });
-}
-
-module.exports = app;
+// Iniciar servidor
+app.listen(PORT, () => {
+    console.log("Hello World");
+    console.log(`Servidor ejecutándose en el puerto ${PORT}`);
+});
