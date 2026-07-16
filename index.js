@@ -8,6 +8,8 @@ const userRoutes = require("./src/routes/userRoutes");
 const cartRoutes = require("./src/routes/cartRoutes");
 const orderRoutes = require("./src/routes/orderRoutes");
 
+const validateToken = require("./src/middleware/validateToken");
+
 const app = express();
 
 const PORT = process.env.PORT || 5100;
@@ -17,7 +19,18 @@ connectDB();
 
 app.use(express.json());
 
-// Rutas
+// Ruta principal
+app.get("/", (req, res) => {
+    res.json({
+        message: "API Librería Segura",
+        status: "OK"
+    });
+});
+
+// Middleware de autenticación para toda la API
+app.use(validateToken);
+
+// Rutas protegidas
 app.use("/api/books", bookRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/carts", cartRoutes);
