@@ -8,6 +8,8 @@ const userRoutes = require("./src/routes/userRoutes");
 const cartRoutes = require("./src/routes/cartRoutes");
 const orderRoutes = require("./src/routes/orderRoutes");
 
+const validateToken = require("./src/middleware/validateToken");
+
 const app = express();
 
 const PORT = process.env.PORT || 5100;
@@ -25,7 +27,10 @@ app.get("/", (req, res) => {
     });
 });
 
-// Rutas de la API
+// Middleware de autenticación para toda la API
+app.use(validateToken);
+
+// Rutas protegidas
 app.use("/api/books", bookRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/carts", cartRoutes);
