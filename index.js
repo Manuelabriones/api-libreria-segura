@@ -1,6 +1,8 @@
 require("dotenv").config();
 
 const express = require("express");
+const helmet = require("helmet");
+
 const connectDB = require("./src/config/database");
 
 const bookRoutes = require("./src/routes/bookRoutes");
@@ -16,6 +18,15 @@ const PORT = process.env.PORT || 5100;
 
 // Conectar a MongoDB
 connectDB();
+
+// Configuración de Helmet
+app.use(
+    helmet({
+        frameguard: {
+            action: "deny"
+        }
+    })
+);
 
 // Middleware
 app.use(express.json());
