@@ -6,7 +6,11 @@ exports.getBooks = async (req, res) => {
     const books = await Book.find();
     res.status(200).json(books);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error al obtener los libros:", error);
+
+    res.status(500).json({
+      message: "Error interno del servidor."
+    });
   }
 };
 
@@ -16,12 +20,19 @@ exports.getBookById = async (req, res) => {
     const book = await Book.findById(req.params.id);
 
     if (!book) {
-      return res.status(404).json({ message: "Libro no encontrado" });
+      return res.status(404).json({
+        message: "Libro no encontrado."
+      });
     }
 
     res.status(200).json(book);
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error al obtener el libro:", error);
+
+    res.status(500).json({
+      message: "Error interno del servidor."
+    });
   }
 };
 
@@ -29,11 +40,17 @@ exports.getBookById = async (req, res) => {
 exports.createBook = async (req, res) => {
   try {
     const book = new Book(req.body);
+
     await book.save();
 
     res.status(201).json(book);
+
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Error al crear el libro:", error);
+
+    res.status(400).json({
+      message: "Los datos enviados no son válidos."
+    });
   }
 };
 
@@ -43,16 +60,26 @@ exports.updateBook = async (req, res) => {
     const book = await Book.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true, runValidators: true }
+      {
+        new: true,
+        runValidators: true
+      }
     );
 
     if (!book) {
-      return res.status(404).json({ message: "Libro no encontrado" });
+      return res.status(404).json({
+        message: "Libro no encontrado."
+      });
     }
 
     res.status(200).json(book);
+
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Error al actualizar el libro:", error);
+
+    res.status(400).json({
+      message: "Los datos enviados no son válidos."
+    });
   }
 };
 
@@ -62,11 +89,20 @@ exports.deleteBook = async (req, res) => {
     const book = await Book.findByIdAndDelete(req.params.id);
 
     if (!book) {
-      return res.status(404).json({ message: "Libro no encontrado" });
+      return res.status(404).json({
+        message: "Libro no encontrado."
+      });
     }
 
-    res.status(200).json({ message: "Libro eliminado correctamente" });
+    res.status(200).json({
+      message: "Libro eliminado correctamente."
+    });
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error al eliminar el libro:", error);
+
+    res.status(500).json({
+      message: "Error interno del servidor."
+    });
   }
 };

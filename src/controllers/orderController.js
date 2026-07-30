@@ -4,9 +4,15 @@ const Order = require("../models/Order");
 exports.createOrder = async (req, res) => {
     try {
         const order = await Order.create(req.body);
+
         res.status(201).json(order);
+
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error("Error al crear la orden:", error);
+
+        res.status(400).json({
+            message: "Los datos enviados no son válidos."
+        });
     }
 };
 
@@ -18,8 +24,13 @@ exports.getOrders = async (req, res) => {
             .populate("items.book");
 
         res.status(200).json(orders);
+
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Error al obtener las órdenes:", error);
+
+        res.status(500).json({
+            message: "Error interno del servidor."
+        });
     }
 };
 
@@ -32,13 +43,18 @@ exports.getOrderById = async (req, res) => {
 
         if (!order) {
             return res.status(404).json({
-                message: "Orden no encontrada",
+                message: "Orden no encontrada."
             });
         }
 
         res.status(200).json(order);
+
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Error al obtener la orden:", error);
+
+        res.status(500).json({
+            message: "Error interno del servidor."
+        });
     }
 };
 
@@ -50,19 +66,24 @@ exports.updateOrder = async (req, res) => {
             req.body,
             {
                 new: true,
-                runValidators: true,
+                runValidators: true
             }
         );
 
         if (!order) {
             return res.status(404).json({
-                message: "Orden no encontrada",
+                message: "Orden no encontrada."
             });
         }
 
         res.status(200).json(order);
+
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error("Error al actualizar la orden:", error);
+
+        res.status(400).json({
+            message: "Los datos enviados no son válidos."
+        });
     }
 };
 
@@ -73,14 +94,19 @@ exports.deleteOrder = async (req, res) => {
 
         if (!order) {
             return res.status(404).json({
-                message: "Orden no encontrada",
+                message: "Orden no encontrada."
             });
         }
 
         res.status(200).json({
-            message: "Orden eliminada correctamente",
+            message: "Orden eliminada correctamente."
         });
+
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Error al eliminar la orden:", error);
+
+        res.status(500).json({
+            message: "Error interno del servidor."
+        });
     }
 };
