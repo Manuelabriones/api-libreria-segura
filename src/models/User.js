@@ -22,13 +22,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'La contraseña es obligatoria'],
       minlength: [8, 'La contraseña debe tener al menos 8 caracteres'],
-      select: false, // Nunca se retorna en consultas por defecto
+      select: false,
     },
     role: {
       type: String,
       enum: ['cliente', 'admin'],
       default: 'cliente',
     },
+
+    // Soporte para usuarios premium
+    isPremium: {
+      type: Boolean,
+      default: false,
+    },
+
     isActive: {
       type: Boolean,
       default: true,
@@ -48,7 +55,6 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    // Nunca exponer __v ni datos sensibles al serializar
     toJSON: {
       transform(doc, ret) {
         delete ret.__v;
@@ -63,10 +69,8 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Índice para búsquedas frecuentes
 userSchema.index({ role: 1, isActive: 1 });
 
-// Hash de contraseña antes de guardar
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) return;
 
@@ -78,12 +82,10 @@ userSchema.pre('save', async function () {
   }
 });
 
-// Método para comparar contraseñas
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-// Verificar si el token JWT fue emitido antes del cambio de contraseña
 userSchema.methods.changedPasswordAfter = function (jwtTimestamp) {
   if (this.passwordChangedAt) {
     const changedAt = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
